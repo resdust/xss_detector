@@ -1,5 +1,8 @@
 # coding: utf-8
-import numpy as np  
+import os
+os.environ["CUDA_VISIBLE_DEVICES"] = "2"
+
+import numpy as np
 import random
 from math import floor
 import matplotlib.pyplot as plt
@@ -16,12 +19,12 @@ batchsize = 128
 alpha = 0.01
 
 #----------------------PSO参数设置---------------------------------  
-class PSO():  
+class PSO():
     def __init__(self,pN,max_iter):
-        self.w = 0.8    
-        self.c1 = 2     
-        self.c2 = 2     
-        self.r1= 0.6  
+        self.w = 0.8
+        self.c1 = 2
+        self.c2 = 2
+        self.r1= 0.6
         self.r2= 0.3
         self.pN = pN                #粒子数量
         self.max_iter = max_iter    #迭代次数  
@@ -132,8 +135,8 @@ class PSO():
                 self.inner_init(10,self.X[i],50)
                 for it in range(self.imax_iter):
                     for ii in range(self.ipN):
-                        with open("schedule.txt","a") as f:
-                            f.write(str(t)+" "+str(i)+" "+str(it)+" "+str(ii)+'\n')
+                        with open("schedule.txt","w") as f:
+                            f.write("目前进度：外层第%d轮第%d个粒子，内层第%d轮第%d个粒子\n"%(t,i,it,ii))
                             f.close()
                         for ii2 in range(self.ipN):
                             temp = self.function(self.X[i],self.iX[ii],self.iX2[ii2])
@@ -162,10 +165,11 @@ class PSO():
                         self.gbest = self.X[i]
                         self.fit = self.p_fit[i]
                 with open ("pso.out","a") as f:
-                    f.write("第%d轮第%d个粒子对应适应度函数值为%lf\n"%(t,i,self.fit))  #输出最优值
+                    f.write("第%d轮第%d个粒子对应适应度函数值为%lf "%(t,i,self.fit))  #输出最优值
+                    f.write(str(self.gbest)+' igbest='+str(self.igbest)+' igbest2='+str(self.igbest2)+'\n')
                     f.close()
             with open("pso.out", "a") as f:
-                f.write(str(t)+" "+str(self.fit)+" "+str(self.X)+" "+str(self.iX)+" "+str(self.iX2)+'\n')
+                f.write(str(t)+" "+str(self.fit)+" "+str(self.gbest)+" "+str(self.igbest)+" "+str(self.igbest2)+'\n')
                 f.close()
             for i in range(self.pN):
                 self.V[i] = self.w*self.V[i] + self.c1*self.r1*(self.pbest[i] - self.X[i]) + \
@@ -173,35 +177,3 @@ class PSO():
                 self.X[i] = self.X[i] + self.V[i]
             fitness.append(self.fit)
         return fitness
-
-#----------------------程序执行-----------------------
-if __name__ == "__main__":
-    x = []  # feature data vectors
-    y = []  # labels
-    # Read data from pickle
-    etl('data/good_example.csv', x, y, 1)
-    etl('data/xss_example.csv', x, y, 0)
-
-    x = np.asarray(x, dtype=float)
-    y = np.asarray(y, dtype=int)
-    y = to_categorical(y, num_classes=2)
-
-    trX, teX, trY, teY = train_test_split(x, y, test_size=0.3, random_state=0)
-
-    #normalization(trX)
-    # normalization(teX)
-
-    my_pso = PSO(pN=10, max_iter=50)
-    my_pso.init_Population()
-    fitness = my_pso.iterator()
-
-# -------------------画图--------------------
-    plt.figure(1)
-    plt.title("pso")
-    plt.xlabel("iterators", size=14)
-    plt.ylabel("fitness", size=14)
-    t = np.array([t for t in range(0, 10)])
-    fitness = np.array(fitness)
-    plt.plot(t, fitness, color='b', linewidth=3)
-    plt.savefig("pso.png")
-    plt.show()
