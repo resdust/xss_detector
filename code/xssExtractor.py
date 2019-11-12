@@ -28,7 +28,7 @@ def get_url_count(url):
         return 0
 
 def get_evil_char(url):
-    return len(re.findall("[`~!@#$%^*()_-+=<>:\"{}| ,./;\'\\[]·]", url, re.IGNORECASE))
+    return len(re.findall("[`~!@#$%^*()_\-+=<>:\"{}| ,./;\'\\[]·]", url, re.IGNORECASE))
 
 def get_evil_word(url):
     XSS = ["window","location","this","iframe","response_write","prompt","javascript",
