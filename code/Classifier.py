@@ -95,6 +95,11 @@ if __name__ == "__main__":
     # normalization(X)
     # normalization(testX)
 
+<<<<<<< HEAD:code/Classifier.py
     RF(X, Y, testX, testY)
     # mlp(X, Y, testX, testY)
     # do_DNN(X, Y, testX, testY)
+=======
+    mlp(X, Y, testX, testY)
+    # do_DNN(X, Y, testX, testY)
+>>>>>>> 6395847e9fbcf164606c547df188c72b60242144:code/xssExtractor.py
