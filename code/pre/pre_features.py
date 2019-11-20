@@ -53,6 +53,7 @@ def do_metrics(y_test,y_pred):
 # return labels
 def extract_feature(filename,data,y,isxss):
     import pickle
+    import time
 
     pk_file = filename[:-3]+'pickle'
     start = time.time() 
@@ -66,12 +67,12 @@ def extract_feature(filename,data,y,isxss):
             data.append([f1,f2,f3,f4])
             y.append(isxss)
     end = time.time()
-    print('Finish feature extraction in %.4f.' %(end-start))
+    print('Finish feature extraction in %.4fs.' %(end-start))
 
     with open(pk_file, 'wb') as pkf:
         pickle.dump(data, pkf)
         
-    return data
+    return y
 
 def normalization(x):
     mean = x.mean(axis=0)
@@ -80,7 +81,6 @@ def normalization(x):
     x /= std
 
 if __name__ == "__main__":
-    import time 
 
     x = [] # feature data vectors
     y = [] # labels

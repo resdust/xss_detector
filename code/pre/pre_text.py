@@ -101,5 +101,5 @@ if __name__ == "__main__":
     y = [] # lables
     good_example = 'xss_detector\\data\\good_sample.csv'
     xss_example = 'xss_detector\\data\\xss_sample.csv'
-    f2l(good_example,x,0)
-    f2l(xss_example,x,1)
+    word_embed(good_example,x,0)
+    word_embed(xss_example,x,1)
