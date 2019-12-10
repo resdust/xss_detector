@@ -88,14 +88,40 @@ def mergeFiles(xss, normal, out):
             with open(out, 'w', encoding='utf-8', newline='') as f3:
                 writer = csv.writer(f3)
                 for data in data1:
-                    new = [data[0],'1']
-                    writer.writerow(new)
+                    if data:
+                        new = [data[0],'1']
+                        writer.writerow(new)
                 for data in data2:
-                    new = [data[0],'0']
-                    writer.writerow(new)
+                    if data:
+                        new = [data[0],'0']
+                        writer.writerow(new)
 
-def splitFile(input):
-    pass
+def csvWrite(file, datas):
+    import csv
+    with open(file, 'w', newline='') as f:
+        writer = csv.writer(f, delimiter = ',', quoting = csv.QUOTE_NONE)
+        for data in datas:
+            data = [data]
+            writer.writerow([data])
+
+def splitFile(input, cent):
+    import csv
+    from sklearn.model_selection import train_test_split
+
+    with open(input, 'r', encoding='utf-8') as f:
+        datas = csv.reader(f)
+        x = [] #data
+        y = [] #label
+        for d, l in datas:
+            x.append(d)
+            y.append(l)
+    
+    x_unlabeled, x_labeled, y_unlabeled, y_labeled = train_test_split(x,y, test_size=cent, random_state=0)
+    csvWrite(r'data\unlabeled_x_'+str(int(cent*100))+'.csv', x_unlabeled)
+    csvWrite(r'data\unlabeled_y_'+str(int(cent*100))+'.csv', y_unlabeled)
+    csvWrite(r'data\labeled_x_'+str(int(cent*100))+'.csv', x_labeled)
+    csvWrite(r'data\labeled_y_'+str(int(cent*100))+'.csv', y_labeled)
+
 normal_csv_file = "./normal_data.csv"
 good_file = "good-xss-200000.txt"
 goodfile = "good_example.csv"
@@ -112,19 +138,17 @@ normal2 = r"data\normal_data_162k_dl.csv"
 
 test = r"data\test.csv"
 train = r"data\train.csv"
-labeled_20 = r"data\labeled_20.csv"
-labeled_40 = r"data\labeled_40.csv"
-unlabeled_20 = r"data\unlabeled_20.csv"
-unlabeled_40 = r"data\unlabeled_40.csv"
 
-# length = writeEvil(xss_csv_file, xss_file, xssfile)
-# writeNormal(normal_csv_file, good_file, goodfile, length)
-# addEvil('normal_data.csv', 'normal_data2.csv')
-# dropRepeat('normal_examples.csv','normal_data2.csv')
-# extractPayload('xss.csv','payload.csv')
-# extractXssLog('xsstrike-good.log','xss_data2.csv')
-# reWrite(r'data\xss_data_3k_xsstrike.csv', r'data\xss_data_3k_xsstrik2.csv')
-mergeFiles(xss1, normal1,test)
-mergeFiles(xss2, normal2,train)
+if __name__ == '__main__':
+    # length = writeEvil(xss_csv_file, xss_file, xssfile)
+    # writeNormal(normal_csv_file, good_file, goodfile, length)
+    # addEvil('normal_data.csv', 'normal_data2.csv')
+    # dropRepeat('normal_examples.csv','normal_data2.csv')
+    # extractPayload('xss.csv','payload.csv')
+    # extractXssLog('xsstrike-good.log','xss_data2.csv')
+    # reWrite(r'data\xss_data_3k_xsstrike.csv', r'data\xss_data_3k_xsstrik2.csv')
+    # mergeFiles(xss1, normal1,test)
+    # mergeFiles(xss2, normal2,train)
 
-splitFile(train)
+    # splitFile(train, 0.4)
+    # splitFile(train, 0.2)
