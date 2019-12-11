@@ -20,7 +20,6 @@ for i in range(char_num):
     vars()[word] = 0
     feature_names.append(word)
 feature_names.append('label')
-print(feature_names)
 
 def featureExtract(feature_file, df):
     import urllib
@@ -102,7 +101,25 @@ def readDatas(file):
     return df
     
 if __name__ == '__main__':
-    # file = 'data\\test.csv'
-    file = 'data\\train.csv'
-    df = readDatas(file)
-    featureExtract(file.split('.')[0]+'Feature.csv', df)
+    file = 'data\\test.csv'
+    # file = 'data\\train.csv'
+    feature_file = file.split('.')[0]+'Feature.csv'
+    new_feature_file = feature_file.split('.')[0]+'_useful.csv'
+
+    # df = readDatas(file)
+    # featureExtract(feature_file, df)
+
+    useful = [6,27,7,4,45,25,24,44,40,26,23,20,21,22,19]
+    df_feature = pd.read_csv(feature_file,header=0)
+    df_feature = df_feature.round({'digit_percentage':6,'letter_percentage':6})
+
+    useful_feature_names = []
+    for i in useful:
+        useful_feature_names.append(feature_names[i-1])
+    useful_feature_names.append('label')
+    print('useful features:', useful_feature_names)
+
+    drop_feature_names = list(set(feature_names)-set(useful_feature_names))
+
+    df_feature = df_feature.drop(drop_feature_names,axis=1)
+    df_feature.to_csv(new_feature_file,index=None)
