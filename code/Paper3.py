@@ -101,15 +101,16 @@ def readDatas(file):
     return df
     
 if __name__ == '__main__':
-    file = 'data\\test.csv'
-    # file = 'data\\train.csv'
+    # file = 'data\\test.csv'
+    file = 'data\\train.csv'
     feature_file = file.split('.')[0]+'Feature.csv'
     new_feature_file = feature_file.split('.')[0]+'_useful.csv'
 
     # df = readDatas(file)
     # featureExtract(feature_file, df)
 
-    useful = [6,27,7,4,45,25,24,44,40,26,23,20,21,22,19]
+    # useful = [6,27,7,4,45,25,24,44,40,26,23,20,21,22,19]
+    useful = [26,46,27,28,29,47,49,6,3,50,4,25,48,24,7,2,1,40,9,45,44,19,5,23]
     df_feature = pd.read_csv(feature_file,header=0)
     df_feature = df_feature.round({'digit_percentage':6,'letter_percentage':6})
 
