@@ -20,7 +20,7 @@ def addEvil(src_file, dest_file):
     with open(dest_file, 'a', encoding='utf-8') as f2:
         f2.writelines(lines)
 
-def dropRepeat(file, newfile):
+def dropRepeat(file, newfile=None):
     with open(file, 'r', encoding='utf-8',newline='') as f:
         lines = f.readlines()
         datas = {}
@@ -28,9 +28,11 @@ def dropRepeat(file, newfile):
             if line not in datas:
                 datas[line]=1
         
-    with open(newfile,'w',encoding='utf-8',newline='') as f:
-        for data in datas:
-            f.write(data)
+    # with open(newfile,'w',encoding='utf-8',newline='') as f:
+    #     for data in datas:
+    #         f.write(data)
+    payloads = [key for key in datas]
+    return payloads
 
 def extractPayload(file, newfile):
     import re 
@@ -80,7 +82,7 @@ def reWrite(old, new):
 
 def mergeFiles(xss, normal, out):
     import csv
-
+    
     with open(xss, 'r', encoding='utf-8') as f1:
         data1 = csv.reader(f1)
         with open(normal, 'r', encoding='utf-8') as f2:
@@ -96,13 +98,24 @@ def mergeFiles(xss, normal, out):
                         new = [data[0],'0']
                         writer.writerow(new)
 
-def csvWrite(file, datas):
+def csvWrite(file, datas, label=None):
     import csv
-    with open(file, 'w', newline='') as f:
-        writer = csv.writer(f, delimiter = ',', quoting = csv.QUOTE_NONE)
-        for data in datas:
-            data = [data]
-            writer.writerow([data])
+    import re
+    from urllib.parse import quote
+
+    with open(file, 'w', encoding='utf-8', newline='') as f:
+        # writer = csv.writer(f, delimiter = ',', quoting = csv.QUOTE_NONE, quotechar='', escapechar='\\')
+        writer = csv.writer(f)
+        if label!=None:
+            for data in datas:
+                data = data.rstrip()
+                data = data.replace(',',quote(','))
+                data = [data, label]
+                writer.writerow(data)
+        else:
+            for data in datas:
+                data = data.rstrip()
+                writer.writerow(data)
 
 def splitFile(input, cent):
     import csv
@@ -137,7 +150,9 @@ normal1 = r"data\normal_data_39k_bupt.csv"
 normal2 = r"data\normal_data_162k_dl.csv"
 
 test = r"data\test.csv"
-train = r"data\train.csv"
+train = r"data\train1.csv"
+
+payloads = 'data\\payloads.txt'
 
 if __name__ == '__main__':
     # length = writeEvil(xss_csv_file, xss_file, xssfile)
@@ -147,8 +162,33 @@ if __name__ == '__main__':
     # extractPayload('xss.csv','payload.csv')
     # extractXssLog('xsstrike-good.log','xss_data2.csv')
     # reWrite(r'data\xss_data_3k_xsstrike.csv', r'data\xss_data_3k_xsstrik2.csv')
-    # mergeFiles(xss1, normal1,test)
-    # mergeFiles(xss2, normal2,train)
+    import random
+    data1 = dropRepeat(r'data\CSICtrain.csv')
+    data2 = dropRepeat(r'data\URLdata.csv')
+    count = 0
+    with open(r'data\xss_data_28k_xssed.csv','r',encoding='utf-8') as f:
+        datas = f.readlines()
+        count = len(datas)
+    with open(r'data\normal_data_162k_dl.csv','r',encoding='utf-8') as f:
+        data3 = f.readlines()
+    with open(r'data\normal_data_39k_bupt.csv', 'r', encoding='utf-8') as f:
+        data4 = f.readlines()
+
+    random.shuffle(data1)
+    random.shuffle(data2)
+    random.shuffle(data3)
+    random.shuffle(data4)
+    data1 = data1[:int(count/4)]
+    data2 = data2[:int(count/4)]
+    data3 = data3[:int(count/4)]
+    data4 = data4[:int(count/4)]
+    datas = set(data1).union(set(data2)).union(set(data3)).union(data4)
+    csvWrite(r'data\normal_train.csv', datas, 0)
 
     # splitFile(train, 0.4)
     # splitFile(train, 0.2)
+
+    # with open(payloads, 'r',encoding='utf-8') as f:
+    #     datas = f.readlines()
+    #     csvWrite('data\\payloads.csv', datas, 1)
+    mergeFiles(r'data\xss_data_28k_xssed.csv',r'data\normal_train.csv','data\\train.csv')

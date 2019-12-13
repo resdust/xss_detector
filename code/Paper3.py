@@ -1,6 +1,6 @@
 # advaned semi-supervisor algorithm
 # feature extraction
-# 
+
 import numpy as np
 import pandas as pd
 
@@ -30,10 +30,11 @@ def featureExtract(feature_file, df):
     features = [] # write features row by row
     datas = df.values
     for data in datas:
-        input = data[0]
+        input = str(data[0])
         input = input.rstrip()
         input = urllib.parse.unquote(input)
         input = html.unescape(input) #decode
+        input = input.lower()
         
         label = data[1]
         feature = []
@@ -99,18 +100,20 @@ def featureExtract(feature_file, df):
 def readDatas(file):
     df = pd.read_csv(file, header=None)
     return df
-    
-if __name__ == '__main__':
-    # file = 'data\\test.csv'
-    file = 'data\\train.csv'
+
+
+def main(file):
     feature_file = file.split('.')[0]+'Feature.csv'
     new_feature_file = feature_file.split('.')[0]+'_useful.csv'
 
-    # df = readDatas(file)
-    # featureExtract(feature_file, df)
+    df = readDatas(file)
+    featureExtract(feature_file, df)
 
-    # useful = [6,27,7,4,45,25,24,44,40,26,23,20,21,22,19]
-    useful = [26,46,27,28,29,47,49,6,3,50,4,25,48,24,7,2,1,40,9,45,44,19,5,23]
+    # useful = [26,46,27,28,29,47,49,6,3,50,4,25,48,24,7,2,1,40,9,45,44,19,5,23] # train
+    # useful = [40,18,41,3,4,19,20,21,1,22,23,2,5,9,42,6,17,16,8,13] # test
+    useful = [1, 2, 3, 4, 5, 6, 7, 8, 9, 13, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 40, 41, 42, 44, 45, 46, 47, 
+48, 49, 50]
+
     df_feature = pd.read_csv(feature_file,header=0)
     df_feature = df_feature.round({'digit_percentage':6,'letter_percentage':6})
 
@@ -124,3 +127,11 @@ if __name__ == '__main__':
 
     df_feature = df_feature.drop(drop_feature_names,axis=1)
     df_feature.to_csv(new_feature_file,index=None)
+ 
+if __name__ == '__main__':
+    # test_file = 'data\\test.csv'
+    # train_file = 'data\\train.csv'
+    # main(test_file)
+    # main(train_file)
+    file = r'data\train.csv'
+    main(file)
