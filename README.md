@@ -1,5 +1,5 @@
 # xss_detector
-A real-time detector deployed in server end for xss. (It will be like that)
+A machine learning detector for xss in HTTP requests. 
 
 ## frame
 - *capture internet traffic packets*
@@ -12,9 +12,6 @@ A real-time detector deployed in server end for xss. (It will be like that)
   - deep nueral network using text classification features
   - semi-supervised classifer using evil url features
 - paper
-
-## TODO
-All except the italics.
 
 ## Dataset
 Datasets are in `data` folder.
